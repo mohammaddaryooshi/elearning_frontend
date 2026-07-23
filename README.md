@@ -1,4 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project for a Persian e-learning platform.
+
+## Shared API config
+
+Axios is configured centrally in `lib/api/client.ts`.
+
+- `NEXT_PUBLIC_API_BASE_URL` sets the public base URL for browser requests.
+- `API_BASE_URL` is available for server-side overrides.
+- `NEXT_PUBLIC_API_TIMEOUT_MS` controls request timeout in milliseconds.
+- `NEXT_PUBLIC_APP_NAME` and `NEXT_PUBLIC_DEFAULT_LOCALE` feed shared app config.
+
+Copy `.env.example` to `.env.local` and adjust the values for your backend.
 
 ## Getting Started
 
