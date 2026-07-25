@@ -32,23 +32,20 @@ export function isValidIdentifierForChannel(
 }
 
 export function sanitizePendingOtpContact(input: {
-    channel?: string | null;
     identifier?: string | null;
 }): PendingOtpContact | null {
-    const rawChannel = input.channel?.trim();
-    const channel =
-        rawChannel === "email" || rawChannel === "phone" ? rawChannel : null;
-
-    if (!channel || !input.identifier) {
+    if (!input.identifier) {
         return null;
     }
 
     const identifier = normalizeIdentifier(input.identifier);
-    if (!isValidIdentifierForChannel(channel, identifier)) {
+    const channel = detectAuthChannel(identifier);
+
+    if (!channel) {
         return null;
     }
 
-    return { channel, identifier };
+    return { identifier };
 }
 
 export function normalizeAuthInput(value: string) {

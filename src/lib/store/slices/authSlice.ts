@@ -38,7 +38,11 @@ const authSlice = createSlice({
     },
 });
 
-export const { setPendingOtpContact, clearPendingOtpContact, setUser, clearAuth } =
-    authSlice.actions;
+export const {
+    setPendingOtpContact,
+    clearPendingOtpContact,
+    setUser,
+    clearAuth,
+} = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api/axios";
 import { endpoints } from "@/lib/api/endpoints";
-import { setPendingOtpContact } from "@/lib/store/slices/authSlice";
+import { setPendingOtpContact, setUser } from "@/lib/store/slices/authSlice";
 import { useAppDispatch } from "@/lib/store";
 import { normalizeAuthInput } from "@/lib/auth/contact";
+import { showBackendError } from "@/lib/api/error-handler";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { RequestOtpResult, RequestOtpResponse } from "@/types";
 
 type OtpLoginFormProps = {
     redirect?: string;
@@ -23,7 +24,6 @@ type LoginFormValues = {
 };
 
 export function OtpLoginForm({ redirect }: OtpLoginFormProps) {
-    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const dispatch = useAppDispatch();
     const {
@@ -37,40 +37,46 @@ export function OtpLoginForm({ redirect }: OtpLoginFormProps) {
     });
 
     const sendOtp = useMutation({
-        mutationFn: async (payload: { channel: "email" | "phone"; identifier: string }) => {
-            await api.post(endpoints.auth.sendOtp, payload);
+        mutationFn: async (payload: { identifier: string }) => {
+            const response = await api.post<RequestOtpResult>(endpoints.auth.sendOtp, {
+                identifier: payload.identifier,
+            });
+            return response.data;
         },
-        onSuccess: (_, variables) => {
+        onSuccess: (data, variables) => {
+            if ("authenticated" in data && data.authenticated) {
+                dispatch(setUser(data.user));
+                router.push(redirect ?? "/dashboard");
+                return;
+            }
+
+            const otpResponse = data as RequestOtpResponse;
+
             dispatch(
                 setPendingOtpContact({
-                    channel: variables.channel,
                     identifier: variables.identifier,
                 })
             );
 
             const query = new URLSearchParams({
-                channel: variables.channel,
                 identifier: variables.identifier,
+                identifier_type: otpResponse.identifier_type,
                 redirect: redirect ?? "/dashboard",
             });
             router.push(`/verify?${query.toString()}`);
         },
-        onError: () => {
-            setError("ارسال کد تایید با خطا مواجه شد. لطفا دوباره تلاش کنید.");
+        onError: (error) => {
+            showBackendError(error);
         },
     });
 
     const onSubmit = handleSubmit(async (values) => {
-        setError(null);
-
         const normalized = normalizeAuthInput(values.authInput);
         if (!normalized.channel) {
-            setError("ایمیل یا شماره موبایل معتبر وارد کنید.");
             return;
         }
 
         await sendOtp.mutateAsync({
-            channel: normalized.channel,
             identifier: normalized.identifier,
         });
     });
@@ -109,8 +115,6 @@ export function OtpLoginForm({ redirect }: OtpLoginFormProps) {
                             <p className="text-sm text-red-600">{errors.authInput.message}</p>
                         ) : null}
                     </div>
-
-                    {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
                     <Button className="w-full text-gray-50" type="submit" disabled={sendOtp.isPending}>
                         {sendOtp.isPending ? "در حال ارسال..." : "ارسال کد تایید"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
@@ -13,7 +13,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
-import type { AuthChannel, AuthResponse } from "@/types";
+import { detectAuthChannel } from "@/lib/auth/contact";
+import { showBackendError } from "@/lib/api/error-handler";
+import type { CompleteRegisterPayload, CompleteRegisterResponse } from "@/types";
 
 type RegisterFormValues = {
     firstName: string;
@@ -23,17 +25,16 @@ type RegisterFormValues = {
 };
 
 type RegisterFormProps = {
-    channel: AuthChannel;
     identifier: string;
     redirect?: string;
 };
 
-export function RegisterForm({ channel, identifier, redirect }: RegisterFormProps) {
-    const [error, setError] = useState<string | null>(null);
+export function RegisterForm({ identifier, redirect }: RegisterFormProps) {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const safeRedirect = useMemo(() => getSafeRedirectPath(redirect), [redirect]);
 
+    const channel = detectAuthChannel(identifier);
     const lockedPhone = channel === "phone" ? identifier : "";
     const lockedEmail = channel === "email" ? identifier : "";
 
@@ -52,28 +53,26 @@ export function RegisterForm({ channel, identifier, redirect }: RegisterFormProp
 
     const registerMutation = useMutation({
         mutationFn: async (payload: RegisterFormValues) => {
-            return api.post<AuthResponse>(endpoints.auth.register, {
-                firstName: payload.firstName.trim(),
-                lastName: payload.lastName.trim(),
-                phone: payload.phone.trim(),
+            const body: CompleteRegisterPayload = {
+                first_name: payload.firstName.trim(),
+                last_name: payload.lastName.trim(),
                 email: payload.email.trim().toLowerCase(),
-                channel,
-                identifier,
-            });
+                phone_number: payload.phone.trim(),
+            };
+            const response = await api.post<CompleteRegisterResponse>(endpoints.auth.register, body);
+            return response.data;
         },
         onSuccess: (response) => {
-            dispatch(setUser(response.data.user));
+            dispatch(setUser(response.user));
             dispatch(clearPendingOtpContact());
             router.push(safeRedirect);
         },
-        onError: () => {
-            setError("ثبت نام انجام نشد. لطفا اطلاعات را بررسی و دوباره تلاش کنید.");
+        onError: (error) => {
+            showBackendError(error);
         },
     });
 
     const onSubmit = handleSubmit(async (values) => {
-        setError(null);
-
         const payload: RegisterFormValues = {
             firstName: values.firstName,
             lastName: values.lastName,
@@ -148,7 +147,7 @@ export function RegisterForm({ channel, identifier, redirect }: RegisterFormProp
                             readOnly={channel === "phone"}
                             className={channel === "phone" ? "bg-muted" : undefined}
                             {...register("phone", {
-                                required: "وارد کردن تلفن همراه الزامی است.",
+                                required: channel === "phone" ? false : "وارد کردن تلفن همراه الزامی است.",
                                 pattern: {
                                     value: /^09\d{9}$/,
                                     message: "شماره تلفن همراه معتبر نیست.",
@@ -169,7 +168,7 @@ export function RegisterForm({ channel, identifier, redirect }: RegisterFormProp
                             readOnly={channel === "email"}
                             className={channel === "email" ? "bg-muted" : undefined}
                             {...register("email", {
-                                required: "وارد کردن ایمیل الزامی است.",
+                                required: channel === "email" ? false : "وارد کردن ایمیل الزامی است.",
                                 pattern: {
                                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                     message: "ایمیل معتبر نیست.",
@@ -184,8 +183,6 @@ export function RegisterForm({ channel, identifier, redirect }: RegisterFormProp
                             <p className="text-sm text-red-600">{errors.email.message}</p>
                         ) : null}
                     </div>
-
-                    {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
                     <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
                         {registerMutation.isPending ? "در حال ثبت نام..." : "ثبت نام"}

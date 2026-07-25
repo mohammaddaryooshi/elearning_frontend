@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollProgress } from "@/components/common/scroll-progress";
 import { ThemeToggle } from "@/components/common/theme-toggle";
+import { useAppSelector } from "@/lib/store";
 
 const links = [
     { href: "/", label: "خانه" },
@@ -19,6 +20,7 @@ const cartCount = 2;
 
 export function Header() {
     const pathname = usePathname();
+    const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
     return (
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
@@ -53,9 +55,18 @@ export function Header() {
                         </Link>
                     </Button>
 
-                    <Button asChild>
-                        <Link href="/login">ورود / ثبت نام</Link>
-                    </Button>
+                    {isAuthenticated ? (
+                        <Button variant="secondary" size="sm" asChild>
+                            <Link href="/dashboard" className="flex items-center gap-2">
+                                <User className="h-4 w-4" />
+                                <span>پنل کاربری</span>
+                            </Link>
+                        </Button>
+                    ) : (
+                        <Button asChild>
+                            <Link href="/login">ورود / ثبت نام</Link>
+                        </Button>
+                    )}
                 </div>
             </div>
             <ScrollProgress />

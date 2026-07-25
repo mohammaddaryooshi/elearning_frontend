@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Providers } from "@/lib/providers";
 import { iranSans } from "@/lib/fonts";
+import { Toaster } from "sonner";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
         <html lang="fa" dir="rtl" suppressHydrationWarning>
             <body className={`${iranSans.variable} font-sans`}>
                 <Providers>{children}</Providers>
+                <Toaster position="top-center" richColors />
             </body>
         </html>
     );

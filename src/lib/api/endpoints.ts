@@ -1,11 +1,11 @@
 export const endpoints = {
     auth: {
-        sendOtp: "/auth/otp/send",
-        verifyOtp: "/auth/otp/verify",
-        register: "/auth/register",
-        refresh: "/auth/refresh",
-        logout: "/auth/logout",
-        me: "/auth/me",
+        sendOtp: "/api/v1/auth/otp/request",
+        verifyOtp: "/api/v1/auth/otp/verify",
+        register: "/api/v1/auth/register",
+        refresh: "/api/v1/auth/refresh",
+        logout: "/api/v1/auth/logout",
+        session: "/api/v1/auth/session",
     },
     courses: {
         list: "/courses",

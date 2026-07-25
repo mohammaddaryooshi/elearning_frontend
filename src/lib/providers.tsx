@@ -9,9 +9,15 @@ import {
     QueryCache,
 } from "@tanstack/react-query";
 import { store } from "@/lib/store";
+import { useHydrateSession } from "@/lib/hooks/useHydrateSession";
 
 interface ProvidersProps {
     children: ReactNode;
+}
+
+function HydrateSession() {
+    useHydrateSession();
+    return null;
 }
 
 export function Providers({ children }: ProvidersProps) {
@@ -36,7 +42,10 @@ export function Providers({ children }: ProvidersProps) {
             disableTransitionOnChange
         >
             <ReduxProvider store={store}>
-                <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+                <QueryClientProvider client={queryClient}>
+                    <HydrateSession />
+                    {children}
+                </QueryClientProvider>
             </ReduxProvider>
         </ThemeProvider>
     );

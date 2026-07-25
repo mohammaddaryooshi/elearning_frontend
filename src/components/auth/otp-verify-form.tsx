@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { sanitizePendingOtpContact } from "@/lib/auth/contact";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
-import type { OtpVerifyResponse } from "@/types";
+import { showBackendError } from "@/lib/api/error-handler";
+import type { VerifyOtpResponse } from "@/types";
 
 const OTP_LENGTH = 6;
 
@@ -25,7 +25,6 @@ function normalizeOtpDigits(value: string) {
 }
 
 export function OtpVerifyForm() {
-    const [error, setError] = useState<string | null>(null);
     const [digits, setDigits] = useState<string[]>(Array.from({ length: OTP_LENGTH }, () => ""));
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -35,14 +34,13 @@ export function OtpVerifyForm() {
     );
     const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
-    const otpContact = useMemo(
-        () =>
-            sanitizePendingOtpContact({
-                channel: searchParams.get("channel") ?? pendingOtpContact?.channel,
-                identifier:
-                    searchParams.get("identifier") ?? pendingOtpContact?.identifier,
-            }),
+    const identifier = useMemo(
+        () => searchParams.get("identifier") ?? pendingOtpContact?.identifier ?? null,
         [pendingOtpContact, searchParams]
+    );
+    const identifierType = useMemo(
+        () => searchParams.get("identifier_type") as "email" | "phone" | null,
+        [searchParams]
     );
     const redirectPath = useMemo(
         () => getSafeRedirectPath(searchParams.get("redirect")),
@@ -63,7 +61,6 @@ export function OtpVerifyForm() {
             nextDigits[index] = value;
             return nextDigits;
         });
-        setError(null);
     };
 
     const setDigitsFromValue = (startIndex: number, rawValue: string) => {
@@ -83,7 +80,6 @@ export function OtpVerifyForm() {
             });
             return nextDigits;
         });
-        setError(null);
 
         const nextFocusIndex = Math.min(startIndex + sanitizedDigits.length, OTP_LENGTH - 1);
         const focusTarget =
@@ -154,80 +150,71 @@ export function OtpVerifyForm() {
         event.preventDefault();
         const nextDigits = Array.from({ length: OTP_LENGTH }, (_, index) => pasted[index] ?? "");
         setDigits(nextDigits);
-        setError(null);
         const focusIndex = Math.min(pasted.length, OTP_LENGTH - 1);
         inputRefs.current[focusIndex]?.focus();
     };
 
     const verifyOtp = useMutation({
         mutationFn: async (code: string) => {
-            if (!otpContact) {
+            if (!identifier) {
                 throw new Error("Invalid OTP context");
             }
 
-            const response = await api.post<OtpVerifyResponse>(endpoints.auth.verifyOtp, {
-                channel: otpContact.channel,
-                identifier: otpContact.identifier,
-                code,
+            const response = await api.post<VerifyOtpResponse>(endpoints.auth.verifyOtp, {
+                identifier,
+                otp: code,
             });
             return response.data;
         },
         onSuccess: (data) => {
-            const isRegistered =
-                data.isRegistered ??
-                (typeof data.requiresRegistration === "boolean"
-                    ? !data.requiresRegistration
-                    : Boolean(data.user));
-
-            if (data.user && isRegistered) {
+            if (data.authenticated) {
                 dispatch(setUser(data.user));
                 dispatch(clearPendingOtpContact());
                 router.push(redirectPath);
                 return;
             }
 
-            if (!otpContact) {
-                setError("فرآیند تایید نامعتبر است. دوباره تلاش کنید.");
+            if (data.needsRegistration) {
+                dispatch(clearPendingOtpContact());
+                const query = new URLSearchParams({
+                    identifier: identifier!,
+                    redirect: redirectPath,
+                });
+                router.push(`/register?${query.toString()}`);
                 return;
             }
-
-            const query = new URLSearchParams({
-                channel: otpContact.channel,
-                identifier: otpContact.identifier,
-                redirect: redirectPath,
-            });
-            router.push(`/register?${query.toString()}`);
         },
-        onError: () => {
-            setError("کد تایید معتبر نیست یا منقضی شده است.");
+        onError: (error) => {
+            showBackendError(error);
         },
     });
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setError(null);
 
-        if (!otpContact) {
-            setError("اطلاعات ورود ناقص است. لطفا دوباره اقدام کنید.");
+        if (!identifier) {
             router.replace("/login");
             return;
         }
 
         if (!isOtpComplete) {
-            setError("کد تایید را کامل وارد کنید.");
             return;
         }
 
         await verifyOtp.mutateAsync(otpCode);
     };
-    console.log({ otpContact, isOtpComplete, digits });
+
+    const displayIdentifier = identifier ?? "شناسه نامعتبر";
+    const maskedIdentifier = identifierType === "email"
+        ? displayIdentifier.replace(/(.{2})(.*)(@.*)$/, "$1***$3")
+        : displayIdentifier.replace(/(\d{3})\d{6}(\d{3})/, "$1******$2");
 
     return (
         <Card className="mx-auto w-full max-w-md">
             <CardHeader>
                 <CardTitle>تایید کد</CardTitle>
                 <CardDescription>
-                    کد ارسال شده به {otpContact?.identifier ?? "شناسه نامعتبر"} را وارد کنید.
+                    کد ارسال شده به {maskedIdentifier} را وارد کنید.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -275,12 +262,10 @@ export function OtpVerifyForm() {
                         </div>
                     </div>
 
-                    {error ? <p className="text-sm text-red-600">{error}</p> : null}
-
                     <Button
                         className="w-full"
                         type="submit"
-                        disabled={!otpContact || !isOtpComplete || verifyOtp.isPending}
+                        disabled={!identifier || !isOtpComplete || verifyOtp.isPending}
                     >
                         {verifyOtp.isPending ? "در حال بررسی..." : "تایید"}
                     </Button>

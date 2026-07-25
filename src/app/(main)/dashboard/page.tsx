@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function DashboardPage() {
-    const { user, hydrateUser } = useAuth();
-
-    useEffect(() => {
-        hydrateUser().catch(() => undefined);
-    }, [hydrateUser]);
+    const { user } = useAuth();
 
     return (
         <main className="container py-10">
