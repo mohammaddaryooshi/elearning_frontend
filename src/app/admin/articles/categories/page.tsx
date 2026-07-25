@@ -43,6 +43,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/cn";
+import { ClientOnly } from "@/components/admin/client-only";
 
 export interface Category {
     id: string;
@@ -767,49 +768,51 @@ export default function ArticleCategoriesPage() {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    <DndContext
-                        collisionDetection={closestCenter}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
-                    >
-                        {categories.length === 0 ? (
-                            <div className="text-center py-8 text-muted-foreground">
-                                هیچ دسته‌بندی یافت نشد.
-                            </div>
-                        ) : (
-                            <>
-                                {/* First "before" zone at very top */}
-                                {activeDragId && (
-                                    <SiblingDropZone
-                                        id={`before-${categories[0].id}`}
-                                        label="ابتدای لیست"
-                                    />
-                                )}
-
-                                <div className="space-y-1">
-                                    {categories.map((category, idx) => (
-                                        <CategoryTreeNode
-                                            key={category.id}
-                                            category={category}
-                                            level={0}
-                                            expanded={expanded}
-                                            onToggleExpand={handleToggleExpand}
-                                            onEdit={handleOpenModal}
-                                            onDelete={setDeleteTarget}
-                                            isDragActive={!!activeDragId}
-                                            isLast={idx === categories.length - 1}
-                                        />
-                                    ))}
+                    <ClientOnly>
+                        <DndContext
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                        >
+                            {categories.length === 0 ? (
+                                <div className="text-center py-8 text-muted-foreground">
+                                    هیچ دسته‌بندی یافت نشد.
                                 </div>
+                            ) : (
+                                <>
+                                    {/* First "before" zone at very top */}
+                                    {activeDragId && (
+                                        <SiblingDropZone
+                                            id={`before-${categories[0].id}`}
+                                            label="ابتدای لیست"
+                                        />
+                                    )}
 
-                                <RootBottomDropZone />
-                            </>
-                        )}
+                                    <div className="space-y-1">
+                                        {categories.map((category, idx) => (
+                                            <CategoryTreeNode
+                                                key={category.id}
+                                                category={category}
+                                                level={0}
+                                                expanded={expanded}
+                                                onToggleExpand={handleToggleExpand}
+                                                onEdit={handleOpenModal}
+                                                onDelete={setDeleteTarget}
+                                                isDragActive={!!activeDragId}
+                                                isLast={idx === categories.length - 1}
+                                            />
+                                        ))}
+                                    </div>
 
-                        <DragOverlay>
-                            {activeDragCat ? <DragGhost category={activeDragCat} /> : null}
-                        </DragOverlay>
-                    </DndContext>
+                                    <RootBottomDropZone />
+                                </>
+                            )}
+
+                            <DragOverlay>
+                                {activeDragCat ? <DragGhost category={activeDragCat} /> : null}
+                            </DragOverlay>
+                        </DndContext>
+                    </ClientOnly>
                 </CardContent>
             </Card>
 
