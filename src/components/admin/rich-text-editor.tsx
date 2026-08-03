@@ -48,7 +48,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 
 interface RichTextEditorProps {
     value: string;

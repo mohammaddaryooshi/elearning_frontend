@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Providers } from "@/lib/providers";
 import { iranSans } from "@/lib/fonts";
 import { Toaster } from "sonner";
-import "@/app/globals.css";
+import "@/styles/globals.css";
 import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
     title: "پنل آموزش آنلاین",

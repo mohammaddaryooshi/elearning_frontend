@@ -1,4 +1,4 @@
-import type { AuthChannel, PendingOtpContact } from "@/types";
+import type { AuthChannel, PendingOtpContact } from "@/features/auth/types";
 
 const PHONE_REGEX = /^09\d{9}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

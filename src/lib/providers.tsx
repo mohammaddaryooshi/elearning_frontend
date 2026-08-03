@@ -9,7 +9,7 @@ import {
     QueryCache,
 } from "@tanstack/react-query";
 import { store } from "@/lib/store";
-import { useHydrateSession } from "@/lib/hooks/useHydrateSession";
+import { useHydrateSession } from "@/hooks/useHydrateSession";
 
 interface ProvidersProps {
     children: ReactNode;

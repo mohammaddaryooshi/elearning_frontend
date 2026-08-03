@@ -35,8 +35,8 @@ import {
 } from "@/constants/permissions";
 import type {
     Permission, PermissionResource, PermissionAction,
-} from "@/types/permission";
-import { cn } from "@/lib/cn";
+} from "@/features/admin/role-and-permissions/types/permission.type";
+import { cn } from "@/lib/utils/cn";
 import { PermissionsTable } from "@/components/admin/permissions-table";
 
 // ── mock data ────────────────────────────────────────────────────────────────

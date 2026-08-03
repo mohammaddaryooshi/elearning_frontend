@@ -6,7 +6,7 @@ import api from "@/lib/api/axios";
 import { endpoints } from "@/lib/api/endpoints";
 import { clearAuth, setUser } from "@/lib/store/slices/authSlice";
 import { showBackendError } from "@/lib/api/error-handler";
-import type { SessionResponse } from "@/types";
+import type { SessionResponse } from "@/features/auth/types";
 
 export function useHydrateSession() {
     const dispatch = useAppDispatch();

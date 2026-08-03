@@ -42,7 +42,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 import { ClientOnly } from "@/components/admin/client-only";
 
 export interface Category {

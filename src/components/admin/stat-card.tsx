@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 
 interface StatCardProps {
     title: string;

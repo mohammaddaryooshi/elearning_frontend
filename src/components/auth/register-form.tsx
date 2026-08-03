@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
 import { detectAuthChannel } from "@/lib/auth/contact";
 import { showBackendError } from "@/lib/api/error-handler";
-import type { CompleteRegisterPayload, CompleteRegisterResponse } from "@/types";
+import type { CompleteRegisterPayload, CompleteRegisterResponse } from "@/features/auth/types";
 
 type RegisterFormValues = {
     firstName: string;

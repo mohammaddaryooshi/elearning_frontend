@@ -39,7 +39,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 import api from "@/lib/api/axios";
 import { endpoints } from "@/lib/api/endpoints";
 import { showBackendError } from "@/lib/api/error-handler";

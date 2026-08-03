@@ -18,9 +18,9 @@ import {
 import {
     Edit2, Trash2, MoreHorizontal, Search, Shield, Lock, Filter,
 } from "lucide-react";
-import type { Permission } from "@/types/permission";
+import type { Permission } from "@/features/admin/role-and-permissions/types/permission.type";
 import { ACTION_COLORS, ACTION_LABELS, RESOURCE_LABELS, RESOURCE_ICONS } from "@/constants/permissions";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 
 
 interface PermissionsTableProps {

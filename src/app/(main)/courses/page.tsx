@@ -1,5 +1,5 @@
 import { CourseCard } from "@/components/courses/course-card";
-import type { Course } from "@/types";
+import type { Course } from "@/features/auth/types";
 
 const courses: Course[] = [
     {

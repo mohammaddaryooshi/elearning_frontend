@@ -28,7 +28,7 @@ import {
     Select, SelectContent, SelectItem,
     SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 

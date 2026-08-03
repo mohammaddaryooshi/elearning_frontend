@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AdminSidebarContent } from "@/components/admin/admin-sidebar-content";
 import { useAppSelector } from "@/lib/store";
-import { useAuth } from "@/lib/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AdminTopbarProps {
     mobileOpen: boolean;

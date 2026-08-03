@@ -31,7 +31,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 
 // ─── Types (mirroring backend entities) ───────────────────────────────────
 type PostStatus = "draft" | "published" | "archived";

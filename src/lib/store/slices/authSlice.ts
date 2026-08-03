@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { PendingOtpContact, User } from "@/types";
+import type { PendingOtpContact, User } from "@/features/auth/types";
 
 interface AuthState {
     isAuthenticated: boolean;

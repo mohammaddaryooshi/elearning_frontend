@@ -48,7 +48,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils/cn";
 
 type MediaCategory = "all" | "image" | "audio" | "video" | "archive" | "document" | "other";
 

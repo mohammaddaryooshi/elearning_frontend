@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
 import { showBackendError } from "@/lib/api/error-handler";
-import type { VerifyOtpResponse } from "@/types";
+import type { VerifyOtpResponse } from "@/features/auth/types";
 
 const OTP_LENGTH = 6;
 

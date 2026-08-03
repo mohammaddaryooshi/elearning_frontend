@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Course } from "@/types";
+import type { Course } from "@/features/auth/types";
 
 const courses: Course[] = [
     {

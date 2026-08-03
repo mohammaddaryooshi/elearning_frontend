@@ -1,4 +1,4 @@
-import type { PermissionResource, PermissionAction } from "@/types/permission";
+import type { PermissionResource, PermissionAction } from "@/features/admin/role-and-permissions/types/permission.type";
 
 export const RESOURCE_LABELS: Record<PermissionResource, string> = {
     users: "کاربران",
