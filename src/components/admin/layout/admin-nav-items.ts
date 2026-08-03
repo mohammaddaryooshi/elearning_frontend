@@ -5,6 +5,7 @@ import {
     UserPen, UserRoundKey, ContactRound, BadgePercent,
     ShoppingBag, BellRing, Settings,
     FolderUp,
+    Tickets,
 } from "lucide-react";
 
 export interface AdminNavLink {
@@ -87,6 +88,12 @@ export const adminNav: AdminNavEntry[] = [
         href: "/admin/media",
         label: "مدیریت فایل ها",
         icon: FolderUp,
+    },
+    {
+        type: "link",
+        href: "/admin/tickets",
+        label: "مدیریت تیکت ها",
+        icon: Tickets,
     },
     {
         type: "link",
