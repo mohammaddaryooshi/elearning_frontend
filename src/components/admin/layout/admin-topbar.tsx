@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, LogOut, Menu, Settings, User as UserIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/common/theme-toggle";
+import { ThemeToggle } from "@/features/site/layout/ThemeToggle";
 import {
     Sheet,
     SheetContent,
@@ -23,7 +23,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AdminSidebarContent } from "@/components/admin/admin-sidebar-content";
+import { AdminSidebarContent } from "@/components/admin/layout/admin-sidebar-content";
 import { useAppSelector } from "@/lib/store";
 import { useAuth } from "@/hooks/useAuth";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils/cn";
-import { AdminSidebarContent } from "@/components/admin/admin-sidebar-content";
+import { AdminSidebarContent } from "@/components/admin/layout/admin-sidebar-content";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 interface AdminSidebarProps {

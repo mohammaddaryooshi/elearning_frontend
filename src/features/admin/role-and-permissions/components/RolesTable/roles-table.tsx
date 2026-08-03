@@ -11,7 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/admin/MainTable";
 import type { PaginationState } from "@tanstack/react-table";
 
 export interface Permission {

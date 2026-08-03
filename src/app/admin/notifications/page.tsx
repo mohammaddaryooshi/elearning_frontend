@@ -28,7 +28,7 @@ import {
 import {
     NotificationsTable,
     type AdminNotificationRow,
-} from "@/components/admin/notifications-table";
+} from "@/features/admin/notifications/components/NotificationsTable";
 
 // ─── mock users برای انتخاب گیرنده ───────────────────────────────────────────
 const MOCK_USERS = [

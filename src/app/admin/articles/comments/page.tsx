@@ -24,7 +24,7 @@ import {
     PostCommentsTable,
     type AdminCommentRow,
     type CommentStatus,
-} from "@/components/admin/post-comments-table";
+} from "@/features/admin/articles/components/ArticlesCommentsTable";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const initialComments: AdminCommentRow[] = [

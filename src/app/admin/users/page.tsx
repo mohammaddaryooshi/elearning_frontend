@@ -15,7 +15,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { UsersTable, type AdminUserRow } from "@/components/admin/users-table";
+import { UsersTable, type AdminUserRow } from "@/features/admin/users/components/UsersTable";
 
 const initialUsers: AdminUserRow[] = [
     { id: "1", fullName: "مریم احمدی", phone: "09123456789", email: "maryam@example.com", role: "student", created_at: "1405/04/29" },

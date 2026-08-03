@@ -29,7 +29,7 @@ import {
 import {
     ContactMessagesTable,
     type AdminContactMessageRow,
-} from "@/components/admin/contact-messages-table";
+} from "@/features/admin/contact-us-messages/components/ContactUsMessagesTable";
 
 // ─── mock data ────────────────────────────────────────────────────────────────
 const initialMessages: AdminContactMessageRow[] = [

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { RegisterForm } from "@/components/auth/register-form";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { sanitizePendingOtpContact } from "@/lib/auth/contact";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
 

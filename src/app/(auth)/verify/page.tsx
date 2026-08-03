@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { OtpVerifyForm } from "@/components/auth/otp-verify-form";
+import { OtpVerifyForm } from "@/features/auth/components/OtpVerifyForm";
 
 export default function VerifyPage() {
     return (

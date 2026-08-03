@@ -1,7 +1,7 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { CheckCheck, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { Globe, MoreHorizontal, Pencil, Trash2, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,54 +11,35 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/admin/MainTable";
 import type { PaginationState } from "@tanstack/react-table";
 
-export interface AdminContactMessageRow {
+export interface AdminNotificationRow {
     id: string;
-    full_name: string;
-    phone: string;
-    email: string;
+    title: string;
     message: string;
     is_read: boolean;
+    is_global: boolean;
+    user_id?: string | null;
+    user_name?: string | null;
     created_at?: string;
 }
 
 function createColumns(handlers: {
-    onView: (msg: AdminContactMessageRow) => void;
-    onMarkRead: (msg: AdminContactMessageRow) => void;
-    onDelete: (msg: AdminContactMessageRow) => void;
-}): ColumnDef<AdminContactMessageRow>[] {
+    onEdit: (n: AdminNotificationRow) => void;
+    onDelete: (n: AdminNotificationRow) => void;
+}): ColumnDef<AdminNotificationRow>[] {
     return [
         {
-            accessorKey: "full_name",
-            header: "نام فرستنده",
-            cell: ({ row }) => {
-                const msg = row.original;
-                return (
-                    <span className={msg.is_read ? "text-muted-foreground" : "font-semibold"}>
-                        {msg.full_name}
-                    </span>
-                );
-            },
-        },
-        {
-            accessorKey: "email",
-            header: "ایمیل",
+            accessorKey: "title",
+            header: "عنوان",
             cell: ({ row }) => (
-                <span className="text-sm text-muted-foreground">{row.getValue("email")}</span>
-            ),
-        },
-        {
-            accessorKey: "phone",
-            header: "شماره تماس",
-            cell: ({ row }) => (
-                <span className="text-sm text-muted-foreground">{row.getValue("phone")}</span>
+                <span className="font-medium">{row.getValue("title")}</span>
             ),
         },
         {
             accessorKey: "message",
-            header: "پیام",
+            header: "متن پیام",
             cell: ({ row }) => (
                 <span className="text-sm text-muted-foreground line-clamp-1 max-w-[260px] block">
                     {row.getValue("message")}
@@ -66,18 +47,39 @@ function createColumns(handlers: {
             ),
         },
         {
+            id: "recipient",
+            header: "گیرنده",
+            cell: ({ row }) => {
+                const n = row.original;
+                if (n.is_global) {
+                    return (
+                        <Badge variant="secondary" className="gap-1">
+                            <Globe className="h-3 w-3" />
+                            همه کاربران
+                        </Badge>
+                    );
+                }
+                return (
+                    <Badge variant="outline" className="gap-1">
+                        <User className="h-3 w-3" />
+                        {n.user_name ?? n.user_id ?? "—"}
+                    </Badge>
+                );
+            },
+        },
+        {
             accessorKey: "is_read",
-            header: "وضعیت",
+            header: "وضعیت خواندن",
             cell: ({ row }) => {
                 const read = row.getValue("is_read") as boolean;
+                const isGlobal = row.original.is_global;
+                if (isGlobal) return <span className="text-muted-foreground text-sm">—</span>;
                 return read ? (
-                    <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10 gap-1">
-                        <CheckCheck className="h-3 w-3" />
+                    <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10">
                         خوانده شده
                     </Badge>
                 ) : (
-                    <Badge variant="outline" className="text-amber-600 border-amber-500/40 gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500 inline-block" />
+                    <Badge variant="outline" className="text-muted-foreground">
                         خوانده نشده
                     </Badge>
                 );
@@ -96,7 +98,7 @@ function createColumns(handlers: {
             id: "actions",
             header: "عملیات",
             cell: ({ row }) => {
-                const msg = row.original;
+                const n = row.original;
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -105,22 +107,13 @@ function createColumns(handlers: {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-card flex flex-col items-end">
-                            <DropdownMenuItem onClick={() => handlers.onView(msg)} className="gap-2">
-                                <Eye className="h-4 w-4" />
-                                مشاهده پیام
+                            <DropdownMenuItem onClick={() => handlers.onEdit(n)} className="gap-2">
+                                <Pencil className="h-4 w-4" />
+                                ویرایش
                             </DropdownMenuItem>
-                            {!msg.is_read && (
-                                <>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => handlers.onMarkRead(msg)} className="gap-2">
-                                        <CheckCheck className="h-4 w-4" />
-                                        علامت خوانده شده
-                                    </DropdownMenuItem>
-                                </>
-                            )}
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                onClick={() => handlers.onDelete(msg)}
+                                onClick={() => handlers.onDelete(n)}
                                 className="gap-2 text-destructive focus:text-destructive"
                             >
                                 <Trash2 className="h-4 w-4" />
@@ -134,28 +127,26 @@ function createColumns(handlers: {
     ];
 }
 
-interface ContactMessagesTableProps {
-    data: AdminContactMessageRow[];
-    onView: (msg: AdminContactMessageRow) => void;
-    onMarkRead: (msg: AdminContactMessageRow) => void;
-    onDelete: (msg: AdminContactMessageRow) => void;
+interface NotificationsTableProps {
+    data: AdminNotificationRow[];
+    onEdit: (n: AdminNotificationRow) => void;
+    onDelete: (n: AdminNotificationRow) => void;
     hasPagination?: boolean;
     pageCount?: number;
     pagination?: PaginationState;
     onPaginationChange?: (pagination: PaginationState) => void;
 }
 
-export function ContactMessagesTable({
+export function NotificationsTable({
     data,
-    onView,
-    onMarkRead,
+    onEdit,
     onDelete,
     hasPagination = false,
     pageCount,
     pagination,
     onPaginationChange,
-}: ContactMessagesTableProps) {
-    const columns = createColumns({ onView, onMarkRead, onDelete });
+}: NotificationsTableProps) {
+    const columns = createColumns({ onEdit, onDelete });
 
     return (
         <DataTable

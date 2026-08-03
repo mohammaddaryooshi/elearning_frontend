@@ -21,8 +21,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { CoursesTable } from "@/components/admin/courses-table";
-import type { AdminCourseRow, CourseStatus } from "@/components/admin/courses-table";
+import { CoursesTable } from "@/features/admin/courses/components/CoursesTable";
+import type { AdminCourseRow, CourseStatus } from "@/features/admin/courses/components/CoursesTable";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const CATEGORIES = ["برنامه‌نویسی", "طراحی", "دیجیتال مارکتینگ", "هوش مصنوعی", "عمومی"];

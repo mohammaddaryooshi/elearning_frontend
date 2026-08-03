@@ -37,7 +37,7 @@ import type {
     Permission, PermissionResource, PermissionAction,
 } from "@/features/admin/role-and-permissions/types/permission.type";
 import { cn } from "@/lib/utils/cn";
-import { PermissionsTable } from "@/components/admin/permissions-table";
+import { PermissionsTable } from "@/features/admin/role-and-permissions/components/PermissinosTable";
 
 // ── mock data ────────────────────────────────────────────────────────────────
 const MOCK_PERMISSIONS: Permission[] = [

@@ -24,7 +24,7 @@ import {
     CourseCommentsTable,
     type AdminCourseCommentRow,
     type CourseCommentStatus,
-} from "@/components/admin/course-comments-table";
+} from "@/features/admin/courses/components/CourseCommentsTable";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const initialComments: AdminCourseCommentRow[] = [

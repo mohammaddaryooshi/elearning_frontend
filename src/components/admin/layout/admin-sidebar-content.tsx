@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
-import { adminNav, type AdminNavEntry } from "@/components/admin/admin-nav-items";
+import { adminNav, type AdminNavEntry } from "@/components/admin/layout/admin-nav-items";
 import {
     Accordion,
     AccordionContent,

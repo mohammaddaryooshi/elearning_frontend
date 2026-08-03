@@ -33,7 +33,7 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { RolesTable, type AdminRoleRow, type Permission } from "@/components/admin/roles-table";
+import { RolesTable, type AdminRoleRow, type Permission } from "@/features/admin/role-and-permissions/components/RolesTable/roles-table";
 
 // ─── all permissions (grouped) ───────────────────────────────────────────────
 const ALL_PERMISSIONS: Permission[] = [

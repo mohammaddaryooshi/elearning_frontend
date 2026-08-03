@@ -20,7 +20,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { PostsTable, type AdminPostRow, type PostStatus } from "@/components/admin/posts-table";
+import { PostsTable, type AdminPostRow, type PostStatus } from "@/features/admin/articles/components/ArticlesTable";
 
 // ─── Mock data ───────────────────────────────────────────────────────────────
 const CATEGORIES = ["برنامه‌نویسی", "طراحی", "دیجیتال مارکتینگ", "هوش مصنوعی", "عمومی"];

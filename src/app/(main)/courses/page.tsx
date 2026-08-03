@@ -1,4 +1,4 @@
-import { CourseCard } from "@/components/courses/course-card";
+import { CourseCard } from "@/features/site/courses/CourseCard";
 import type { Course } from "@/features/auth/types";
 
 const courses: Course[] = [

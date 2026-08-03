@@ -43,7 +43,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils/cn";
-import { ClientOnly } from "@/components/admin/client-only";
+import { ClientOnly } from "@/components/admin/layout/client-only";
 
 export interface Category {
     id: string;

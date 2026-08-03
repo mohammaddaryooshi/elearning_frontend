@@ -19,7 +19,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { DataTable } from "@/components/admin/data-table";
+import { DataTable } from "@/components/admin/MainTable";
 import type { PaginationState } from "@tanstack/react-table";
 
 export interface AdminUserRow {

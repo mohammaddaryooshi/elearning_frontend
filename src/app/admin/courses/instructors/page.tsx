@@ -25,8 +25,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { InstructorsTable } from "@/components/admin/instructors-table";
-import type { AdminInstructorRow } from "@/components/admin/instructors-table";
+import { InstructorsTable } from "@/features/admin/courses/components/InstructorsTable";
+import type { AdminInstructorRow } from "@/features/admin/courses/components/InstructorsTable";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const initialInstructors: AdminInstructorRow[] = [

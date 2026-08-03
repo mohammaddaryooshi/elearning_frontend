@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollProgress } from "@/components/common/scroll-progress";
-import { ThemeToggle } from "@/components/common/theme-toggle";
+import { ScrollProgress } from "@/features/site/layout/ScrollProgress";
+import { ThemeToggle } from "@/features/site/layout/ThemeToggle";
 import { useAppSelector } from "@/lib/store";
 
 const links = [

@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useState, useSyncExternalStore, type ReactNode } from "react";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { AdminTopbar } from "@/components/admin/admin-topbar";
+import { AdminSidebar } from "@/components/admin/layout/admin-sidebar";
+import { AdminTopbar } from "@/components/admin/layout/admin-topbar";
 
 const COLLAPSE_STORAGE_KEY = "admin-sidebar-collapsed";
 const listeners = new Set<() => void>();

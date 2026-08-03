@@ -1,4 +1,4 @@
-import { OtpLoginForm } from "@/components/auth/otp-login-form";
+import { OtpLoginForm } from "@/features/auth/components/OtpLoginForm";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
 
 type LoginPageProps = {
