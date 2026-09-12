@@ -3,12 +3,14 @@ import type { PendingOtpContact, User } from "@/features/auth/types";
 
 interface AuthState {
     isAuthenticated: boolean;
+    isAuthReady: boolean;
     user: User | null;
     pendingOtpContact: PendingOtpContact | null;
 }
 
 const initialState: AuthState = {
     isAuthenticated: false,
+    isAuthReady: false,
     user: null,
     pendingOtpContact: null,
 };
@@ -30,6 +32,9 @@ const authSlice = createSlice({
             state.user = action.payload;
             state.isAuthenticated = true;
         },
+        setAuthReady: (state) => {
+            state.isAuthReady = true;
+        },
         clearAuth: (state) => {
             state.user = null;
             state.isAuthenticated = false;
@@ -43,6 +48,7 @@ export const {
     clearPendingOtpContact,
     setUser,
     clearAuth,
+    setAuthReady
 } = authSlice.actions;
 
 export default authSlice.reducer;

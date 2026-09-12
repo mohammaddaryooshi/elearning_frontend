@@ -3,10 +3,11 @@ export type AuthChannel = "email" | "phone";
 
 export interface User {
     id: number;
-    fullName: string;
-    phone: string;
+    first_name: string;
+    flast_name: string;
+    phone_number: string;
     email?: string;
-    role: UserRole;
+    roles: [{ name: string, permissions: string[] }]
 }
 
 export interface RequestOtpPayload {
@@ -35,16 +36,12 @@ export interface VerifyOtpPayload {
 
 export interface VerifyOtpLoginResponse {
     authenticated: true;
-    message: string;
     user: User;
-    accessToken: string;
-    refreshToken: string;
 }
 
 export interface VerifyOtpRegisterResponse {
     authenticated: false;
     needsRegistration: true;
-    message: string;
     redirectTo: string;
 }
 
@@ -69,7 +66,7 @@ export interface SessionResponse {
     authenticated: boolean;
     message: string;
     user?: User;
-    accessToken?: string;
+
 }
 
 export interface PendingOtpContact {

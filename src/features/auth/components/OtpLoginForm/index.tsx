@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { RequestOtpResult, RequestOtpResponse } from "@/features/auth/types";
+import { toast } from "sonner";
 
 type OtpLoginFormProps = {
     redirect?: string;
@@ -63,6 +64,8 @@ export function OtpLoginForm({ redirect }: OtpLoginFormProps) {
                 identifier_type: otpResponse.identifier_type,
                 redirect: redirect ?? "/dashboard",
             });
+
+            toast.success(data?.message)
             router.push(`/verify?${query.toString()}`);
         },
         onError: (error) => {

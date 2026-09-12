@@ -20,12 +20,12 @@ const cartCount = 2;
 
 export function Header() {
     const pathname = usePathname();
-    const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+    const { user, isAuthReady } = useAppSelector((state) => state.auth);
 
     return (
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
             <div className="container flex h-16 items-center justify-between gap-4">
-                <div className="flex min-w-0 flex-1  items-center justify-start gap-2">
+                <div className="flex min-w-0 flex-1 items-center justify-start gap-2">
                     <Link href="/" className="shrink-0 text-sm font-semibold text-foreground sm:text-base">
                         آکادمی آنلاین
                     </Link>
@@ -55,7 +55,10 @@ export function Header() {
                         </Link>
                     </Button>
 
-                    {isAuthenticated ? (
+                    {/* تا قبل از hydrate شدن، هیچکدوم رو نشون نده (یا skeleton بذار) */}
+                    {!isAuthReady ? (
+                        <div className="h-9 w-28 rounded-md bg-muted animate-pulse" />
+                    ) : user ? (
                         <Button variant="secondary" size="sm" asChild>
                             <Link href="/dashboard" className="flex items-center gap-2">
                                 <User className="h-4 w-4" />

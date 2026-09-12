@@ -2,6 +2,7 @@ import { GraduationCap, ShoppingBag, Users, Wallet } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/admin/stat-card";
 import { Badge } from "@/components/ui/badge";
+import { AdminRouteGuard } from "@/guards/AdminRouteGuard";
 
 const stats = [
     {
@@ -45,40 +46,43 @@ const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
 
 export default function AdminDashboardPage() {
     return (
-        <div className="space-y-6">
-            <div>
-                <h2 className="text-xl font-bold text-foreground">داشبورد مدیریت</h2>
-                <p className="text-sm text-muted-foreground">وضعیت کلی آکادمی را از این‌جا زیر نظر بگیرید.</p>
-            </div>
+        <AdminRouteGuard roles={["Admin"]}>
+            <div className="space-y-6">
+                <div>
+                    <h2 className="text-xl font-bold text-foreground">داشبورد مدیریت</h2>
+                    <p className="text-sm text-muted-foreground">وضعیت کلی آکادمی را از این‌جا زیر نظر بگیرید.</p>
+                </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {stats.map((stat) => (
-                    <StatCard key={stat.title} {...stat} />
-                ))}
-            </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {stats.map((stat) => (
+                        <StatCard key={stat.title} {...stat} />
+                    ))}
+                </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>آخرین سفارش ها</CardTitle>
-                    <CardDescription>جدیدترین سفارش های ثبت شده در سایت</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <div className="divide-y">
-                        {recentOrders.map((order) => (
-                            <div key={order.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
-                                <div className="flex min-w-0 flex-col gap-1">
-                                    <span className="text-sm font-medium text-foreground">{order.user}</span>
-                                    <span className="truncate text-xs text-muted-foreground">{order.course}</span>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>آخرین سفارش ها</CardTitle>
+                        <CardDescription>جدیدترین سفارش های ثبت شده در سایت</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="divide-y">
+                            {recentOrders.map((order) => (
+                                <div key={order.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
+                                    <div className="flex min-w-0 flex-col gap-1">
+                                        <span className="text-sm font-medium text-foreground">{order.user}</span>
+                                        <span className="truncate text-xs text-muted-foreground">{order.course}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm font-semibold text-foreground">{order.amount} تومان</span>
+                                        <Badge variant={statusVariant[order.status]}>{order.status}</Badge>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-sm font-semibold text-foreground">{order.amount} تومان</span>
-                                    <Badge variant={statusVariant[order.status]}>{order.status}</Badge>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </AdminRouteGuard>
+
     );
 }

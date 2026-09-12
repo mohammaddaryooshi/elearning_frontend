@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { getSafeRedirectPath } from "@/lib/auth/redirect";
 import { showBackendError } from "@/lib/api/error-handler";
 import type { VerifyOtpResponse } from "@/features/auth/types";
+import { ApiResult } from "@/types";
+import { toast } from "sonner";
 
 const OTP_LENGTH = 6;
 
@@ -153,41 +155,49 @@ export function OtpVerifyForm() {
         const focusIndex = Math.min(pasted.length, OTP_LENGTH - 1);
         inputRefs.current[focusIndex]?.focus();
     };
-
     const verifyOtp = useMutation({
-        mutationFn: async (code: string) => {
-            if (!identifier) {
-                throw new Error("Invalid OTP context");
+        mutationFn: async (code: string): Promise<VerifyOtpResponse> => {
+            if (!identifier) throw new Error("Invalid OTP context");
+
+            const response = await api.post<ApiResult<VerifyOtpResponse>>(
+                endpoints.auth.verifyOtp,
+                { identifier, otp: code }
+            );
+
+            const result = response.data;
+
+            if (!result.success) {
+                throw new Error(result.message || "خطا در تایید کد");
             }
 
-            const response = await api.post<VerifyOtpResponse>(endpoints.auth.verifyOtp, {
-                identifier,
-                otp: code,
-            });
-            return response.data;
+            // فقط payload موفق
+            return result.data;
         },
+
         onSuccess: (data) => {
+            // narrowing با discriminator
             if (data.authenticated) {
                 dispatch(setUser(data.user));
                 dispatch(clearPendingOtpContact());
+                toast.success("شما با موفقیت وارد شدید");
                 router.push(redirectPath);
                 return;
             }
 
-            if (data.needsRegistration) {
-                dispatch(clearPendingOtpContact());
-                const query = new URLSearchParams({
-                    identifier: identifier!,
-                    redirect: redirectPath,
-                });
-                router.push(`/register?${query.toString()}`);
-                return;
-            }
+            // authenticated === false => ثبت‌نام
+            dispatch(clearPendingOtpContact());
+            const query = new URLSearchParams({
+                identifier: identifier || identifier!,
+                redirect: redirectPath,
+            });
+            router.push(`/register?${query.toString()}`);
         },
+
         onError: (error) => {
             showBackendError(error);
         },
     });
+
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

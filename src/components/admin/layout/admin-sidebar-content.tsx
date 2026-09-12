@@ -16,6 +16,9 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { canAccess } from "@/lib/utils/authz";
+import { useAppSelector } from "@/lib/store";
+import { useMemo } from "react";
 
 interface AdminSidebarContentProps {
     collapsed?: boolean;
@@ -24,6 +27,35 @@ interface AdminSidebarContentProps {
 
 export function AdminSidebarContent({ collapsed = false, onNavigate }: AdminSidebarContentProps) {
     const pathname = usePathname();
+    const user = useAppSelector((s) => s.auth.user);
+    const visibleNav = useMemo(() => {
+        return adminNav
+            .map((entry) => {
+                if (entry.type === "link") {
+                    return canAccess(user, { permissions: entry.permissions, roles: entry.roles })
+                        ? entry
+                        : null;
+                }
+
+                // group
+                const groupAllowed = canAccess(user, {
+                    permissions: entry.permissions,
+                    roles: entry.roles,
+                });
+
+                const visibleItems = entry.items.filter((item) =>
+                    canAccess(user, { permissions: item.permissions, roles: item.roles })
+                );
+
+                // اگر خود گروه اجازه دارد یا حداقل یک آیتم اجازه دارد، نمایش بده
+                if (!groupAllowed && visibleItems.length === 0) return null;
+
+                return { ...entry, items: visibleItems };
+            })
+            .filter(Boolean) as AdminNavEntry[];
+    }, [user]);
+
+
 
     const renderEntry = (entry: AdminNavEntry, index: number) => {
         if (entry.type === "link") {
@@ -144,7 +176,7 @@ export function AdminSidebarContent({ collapsed = false, onNavigate }: AdminSide
                 className="flex-1 space-y-1 overflow-y-auto px-3 py-4"
                 aria-label="منوی پنل مدیریت"
             >
-                {adminNav.map((entry, index) => renderEntry(entry, index))}
+                {visibleNav.map((entry, index) => renderEntry(entry, index))}
             </nav>
 
             {!collapsed && (
